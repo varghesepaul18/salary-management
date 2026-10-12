@@ -2,7 +2,7 @@ spring:
   application:
     name: salary-management-api
   datasource:
-    url: ${SALARY_DB_URL:jdbc:postgresql://localhost:5432/salary_management}
+    url: jdbc:postgresql://${SALARY_DB_HOST:localhost}:${SALARY_DB_PORT:5432}/${SALARY_DB_NAME:salary_management}
     username: ${SALARY_DB_USERNAME:salary_app}
     password: ${SALARY_DB_PASSWORD}
   jpa:
@@ -11,6 +11,9 @@ spring:
       ddl-auto: validate
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
+
+server:
+  port: ${PORT:8080}
 
 management:
   endpoints:

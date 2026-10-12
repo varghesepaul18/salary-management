@@ -61,7 +61,9 @@ The backend applies Flyway migrations on startup. Configure local database crede
 PowerShell example (set these in the terminal where the backend will run):
 
 ```powershell
-$env:SALARY_DB_URL = 'jdbc:postgresql://localhost:5432/salary_management'
+$env:SALARY_DB_HOST = 'localhost'
+$env:SALARY_DB_PORT = '5432'
+$env:SALARY_DB_NAME = 'salary_management'
 $env:SALARY_DB_USERNAME = 'salary_app'
 $env:SALARY_DB_PASSWORD = '<your local database password>'
 $env:HR_MANAGER_USERNAME = 'hr-manager'
@@ -103,6 +105,18 @@ npm.cmd start
 Open `http://localhost:4200`. In PowerShell, the `.cmd` suffix avoids the script execution policy issue with `npm.ps1` and `ng.ps1`. The local UI calls the API at `http://localhost:8080`.
 
 Sign in with the HR manager username and password configured for your local backend. No demo password is included in the repository.
+
+## Free deployment on Render
+
+The repository includes a Render Blueprint at [`render.yaml`](render.yaml). It provisions a free Spring Boot web service, a free PostgreSQL database, and a free Angular static site. Render builds the Java backend from its Dockerfile; Docker does not need to be installed locally for the cloud build.
+
+To deploy, push the repository to a Git host Render can access, create a new Blueprint from that repository, and provide an `HR_MANAGER_PASSWORD` when prompted. Render generates the JWT signing secret and wires the database and frontend/API URLs from the Blueprint. Once all three services are live, seed the hosted database from your machine using the database's external connection details from Render:
+
+```powershell
+psql "<external PostgreSQL connection string>" -f backend/salary-management-api/scripts/seed-demo-data.sql
+```
+
+The free plan is for this short assessment demo: the API sleeps after 15 minutes without traffic, so its first request may take about a minute to wake it. Free Render Postgres expires 30 days after creation; export or recreate the demo data if you need the demo after that period. See [Render's free instance limits](https://render.com/docs/free).
 
 ## API overview
 
