@@ -1,0 +1,123 @@
+<section class="directory-page" aria-labelledby="directory-title">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">PEOPLE DIRECTORY</p>
+      <h1 id="directory-title">Employees</h1>
+      <p>Find people and review their organization details.</p>
+    </div>
+    <div class="employee-total" aria-live="polite">
+      <strong>{{ totalElements() | number }}</strong>
+      <span>employees</span>
+    </div>
+  </header>
+
+  <form class="filter-panel" [formGroup]="filters" (ngSubmit)="applyFilters()" aria-label="Filter employees">
+    <mat-form-field class="search-field" appearance="outline">
+      <mat-label>Search employees</mat-label>
+      <input matInput formControlName="search" maxlength="100" placeholder="Name or employee number">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Country</mat-label>
+      <mat-select formControlName="country">
+        <mat-option value="">All countries</mat-option>
+        @for (country of countries; track country.code) {
+          <mat-option [value]="country.code">{{ country.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Department</mat-label>
+      <mat-select formControlName="department">
+        <mat-option value="">All departments</mat-option>
+        @for (department of departments; track department) {
+          <mat-option [value]="department">{{ department }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="">All statuses</mat-option>
+        @for (status of statuses; track status.value) {
+          <mat-option [value]="status.value">{{ status.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="filter-actions">
+      <button mat-flat-button color="primary" type="submit">Search</button>
+      <button mat-button type="button" (click)="clearFilters()">Clear</button>
+    </div>
+  </form>
+
+  @if (loading()) {
+    <section class="result-state" role="status" aria-live="polite">
+      <span class="state-mark loading-mark" aria-hidden="true">↻</span>
+      <h2>Loading employees</h2>
+      <p>Getting the latest directory results.</p>
+    </section>
+  } @else if (errorMessage()) {
+    <section class="result-state error-state" role="alert">
+      <span class="state-mark" aria-hidden="true">!</span>
+      <h2>Employee list unavailable</h2>
+      <p>{{ errorMessage() }}</p>
+      <button mat-stroked-button type="button" (click)="retry()">Try again</button>
+    </section>
+  } @else if (employees().length === 0) {
+    <section class="result-state" aria-live="polite">
+      <span class="state-mark" aria-hidden="true">⌕</span>
+      <h2>No employees found</h2>
+      <p>Try another name or adjust the selected filters.</p>
+      <button mat-stroked-button type="button" (click)="clearFilters()">Clear filters</button>
+    </section>
+  } @else {
+    <section class="directory-card" aria-label="Employee search results">
+      <div class="table-scroll">
+        <table>
+          <caption class="visually-hidden">Employee directory search results</caption>
+          <thead>
+            <tr>
+              <th scope="col">Employee</th>
+              <th scope="col">Employee number</th>
+              <th scope="col">Country</th>
+              <th scope="col">Department</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (employee of employees(); track employee.id) {
+              <tr>
+                <td>
+                  <div class="person-cell">
+                    <span class="person-avatar" aria-hidden="true">{{ employee.firstName.charAt(0) }}{{ employee.lastName.charAt(0) }}</span>
+                    <span class="person-name">{{ employee.firstName }} {{ employee.lastName }}</span>
+                  </div>
+                </td>
+                <td class="employee-number">{{ employee.employeeNumber }}</td>
+                <td>{{ employee.countryCode }}</td>
+                <td>{{ employee.department }}</td>
+                <td>
+                  <span class="status-pill" [class.status-active]="employee.employmentStatus === 'ACTIVE'" [class.status-inactive]="employee.employmentStatus === 'INACTIVE'">
+                    <span aria-hidden="true"></span>{{ employee.employmentStatus === 'ACTIVE' ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="table-footer">
+        <p>Showing <strong>{{ pageStart() | number }}–{{ pageEnd() | number }}</strong> of <strong>{{ totalElements() | number }}</strong> employees</p>
+        <div class="pagination" aria-label="Employee result pages">
+          <span>Page {{ page() + 1 }} of {{ totalPages() | number }}</span>
+          <button mat-stroked-button type="button" [disabled]="!canGoPrevious()" (click)="goToPage(page() - 1)" aria-label="Previous page">Previous</button>
+          <button mat-stroked-button type="button" [disabled]="!canGoNext()" (click)="goToPage(page() + 1)" aria-label="Next page">Next</button>
+        </div>
+      </footer>
+    </section>
+  }
+</section>

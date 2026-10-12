@@ -14,11 +14,7 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'employees' },
       {
         path: 'employees',
-        loadComponent: () => import('./shared/feature-placeholder/feature-placeholder').then((module) => module.FeaturePlaceholder),
-        data: {
-          title: 'Employee directory',
-          description: 'Search and review employee details across the organization.',
-        },
+        loadComponent: () => import('./features/employees/employee-directory-page/employee-directory-page').then((module) => module.EmployeeDirectoryPage),
       },
       {
         path: 'analytics',
