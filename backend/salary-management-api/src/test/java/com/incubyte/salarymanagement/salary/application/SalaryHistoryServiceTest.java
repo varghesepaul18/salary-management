@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -127,5 +128,30 @@ class SalaryHistoryServiceTest {
                         "hr.manager"));
 
         verifyNoInteractions(employeeRepository, salaryHistoryRepository);
+    }
+
+    @Test
+    void returnsSalaryHistoryForExistingEmployee() {
+        SalaryHistory entry = mock(SalaryHistory.class);
+        List<SalaryHistory> expected = List.of(entry);
+        when(employeeRepository.existsById(EMPLOYEE_ID)).thenReturn(true);
+        when(salaryHistoryRepository.findAllByEmployee_IdOrderByEffectiveFromDesc(EMPLOYEE_ID))
+                .thenReturn(expected);
+
+        List<SalaryHistory> result = service.getSalaryHistory(EMPLOYEE_ID);
+
+        assertSame(expected, result);
+        verify(employeeRepository).existsById(EMPLOYEE_ID);
+        verify(salaryHistoryRepository).findAllByEmployee_IdOrderByEffectiveFromDesc(EMPLOYEE_ID);
+    }
+
+    @Test
+    void rejectsSalaryHistoryLookupForUnknownEmployee() {
+        when(employeeRepository.existsById(EMPLOYEE_ID)).thenReturn(false);
+
+        assertThrows(NoSuchElementException.class, () -> service.getSalaryHistory(EMPLOYEE_ID));
+
+        verify(employeeRepository).existsById(EMPLOYEE_ID);
+        verifyNoInteractions(salaryHistoryRepository);
     }
 }

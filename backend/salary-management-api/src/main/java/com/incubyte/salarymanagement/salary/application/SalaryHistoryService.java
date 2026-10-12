@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Currency;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +67,22 @@ public class SalaryHistoryService {
         var savedSalaryHistory = salaryHistoryRepository.save(salaryHistory);
         log.info("Saved salary change for employeeId={} with effectiveFrom={}", employeeId, effectiveFrom);
         return savedSalaryHistory;
+    }
+
+    @Transactional(readOnly = true)
+    public List<SalaryHistory> getSalaryHistory(Long employeeId) {
+        if (employeeId == null || employeeId <= 0) {
+            throw new IllegalArgumentException("employeeId must be positive");
+        }
+
+        if (!employeeRepository.existsById(employeeId)) {
+            throw new NoSuchElementException("Employee not found: " + employeeId);
+        }
+
+        List<SalaryHistory> history = salaryHistoryRepository
+                .findAllByEmployee_IdOrderByEffectiveFromDesc(employeeId);
+        log.info("Loaded salary history for employeeId={} entryCount={}", employeeId, history.size());
+        return history;
     }
 
     private void validate(

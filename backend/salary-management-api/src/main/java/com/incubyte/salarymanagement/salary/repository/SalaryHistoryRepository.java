@@ -18,6 +18,8 @@ public interface SalaryHistoryRepository extends JpaRepository<SalaryHistory, Lo
 
     boolean existsByEmployee_IdAndEffectiveFrom(Long employeeId, LocalDate effectiveFrom);
 
+    List<SalaryHistory> findAllByEmployee_IdOrderByEffectiveFromDesc(Long employeeId);
+
     @Query(value = """
             WITH current_salary AS (
                 SELECT DISTINCT ON (salary.employee_id)

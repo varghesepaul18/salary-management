@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +33,27 @@ class SalaryHistoryControllerTest {
 
     @MockitoBean
     private SalaryHistoryService salaryHistoryService;
+
+    @Test
+    void returnsEmployeeSalaryHistoryOrderedByService() throws Exception {
+        SalaryHistory entry = mock(SalaryHistory.class);
+        when(entry.getAnnualBaseSalary()).thenReturn(new BigDecimal("95000"));
+        when(entry.getCurrencyCode()).thenReturn("USD");
+        when(entry.getEffectiveFrom()).thenReturn(LocalDate.of(2026, 10, 1));
+        when(entry.getChangedBy()).thenReturn("hr.manager");
+        when(entry.getChangedAt()).thenReturn(Instant.parse("2026-10-12T11:00:00Z"));
+        when(salaryHistoryService.getSalaryHistory(17L)).thenReturn(List.of(entry));
+
+        mockMvc.perform(get("/api/employees/17/salary-history")
+                        .with(user("hr.manager")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].employeeId").value(17))
+                .andExpect(jsonPath("$[0].annualBaseSalary").value(95000))
+                .andExpect(jsonPath("$[0].currencyCode").value("USD"))
+                .andExpect(jsonPath("$[0].changedBy").value("hr.manager"));
+
+        verify(salaryHistoryService).getSalaryHistory(17L);
+    }
 
     @Test
     void recordsSalaryChangeUsingAuthenticatedUsername() throws Exception {
