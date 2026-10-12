@@ -13,12 +13,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("""
             select employee
             from Employee employee
-            where (:searchTerm is null
-                or lower(employee.employeeNumber) like lower(concat('%', :searchTerm, '%'))
-                or lower(employee.firstName) like lower(concat('%', :searchTerm, '%'))
-                or lower(employee.lastName) like lower(concat('%', :searchTerm, '%')))
-              and (:countryCode is null or employee.countryCode = :countryCode)
-              and (:department is null or lower(employee.department) = lower(:department))
+            where (coalesce(:searchTerm, '') = ''
+                or lower(employee.employeeNumber) like lower(concat('%', coalesce(:searchTerm, ''), '%'))
+                or lower(employee.firstName) like lower(concat('%', coalesce(:searchTerm, ''), '%'))
+                or lower(employee.lastName) like lower(concat('%', coalesce(:searchTerm, ''), '%')))
+              and (coalesce(:countryCode, '') = '' or employee.countryCode = :countryCode)
+              and (coalesce(:department, '') = ''
+                   or lower(employee.department) = lower(coalesce(:department, '')))
               and (:employmentStatus is null
                    or employee.employmentStatus = :employmentStatus)
             """)

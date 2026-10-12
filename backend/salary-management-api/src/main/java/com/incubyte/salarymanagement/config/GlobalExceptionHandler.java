@@ -2,6 +2,8 @@ package com.incubyte.salarymanagement.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -104,6 +107,26 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
         log.debug("No resource found for path={}", request.getRequestURI());
         return problem(HttpStatus.NOT_FOUND, "The requested resource was not found", request);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ProblemDetail> handleDataAccessFailure(
+            DataAccessException exception,
+            HttpServletRequest request) {
+        Throwable rootCause = NestedExceptionUtils.getMostSpecificCause(exception);
+        String sqlState = rootCause instanceof SQLException sqlException
+                ? sqlException.getSQLState()
+                : "unavailable";
+
+        log.error("Database operation failed for path={} rootCauseType={} sqlState={}",
+                request.getRequestURI(), rootCause.getClass().getSimpleName(), sqlState, exception);
+
+        ProblemDetail body = createProblem(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "A database operation failed",
+                request);
+        body.setProperty("errorCode", "DATA_ACCESS_ERROR");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     @ExceptionHandler(Exception.class)

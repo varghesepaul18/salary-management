@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/employees")
 @Tag(name = "Employees", description = "Search and browse the employee directory")
 @SecurityRequirement(name = "bearerAuth")
@@ -46,6 +49,9 @@ public class EmployeeDirectoryController {
             @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of employees per page (1-100)", example = "20")
             @RequestParam(defaultValue = "20") int size) {
+
+        log.info("Searching employees: hasSearchTerm={}, country={}, department={}, status={}, page={}, size={}",
+                search != null && !search.isBlank(), country, department, status, page, size);
         Page<EmployeeSummaryResponse> results = employeeDirectoryService
                 .search(search, country, department, status, page, size)
                 .map(EmployeeSummaryResponse::from);
