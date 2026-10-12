@@ -11,4 +11,6 @@ public interface SalaryHistoryRepository extends JpaRepository<SalaryHistory, Lo
     findFirstByEmployee_IdAndEffectiveFromLessThanEqualOrderByEffectiveFromDesc(
             Long employeeId,
             LocalDate asOf);
+
+    boolean existsByEmployee_IdAndEffectiveFrom(Long employeeId, LocalDate effectiveFrom);
 }
