@@ -1,0 +1,127 @@
+<header class="page-heading">
+  <div>
+    <p class="eyebrow">ACME PEOPLE &amp; PAY</p>
+    <h1>Salary insights</h1>
+    <p>Explore annual base pay by country, department, and currency.</p>
+  </div>
+  @if (report(); as currentReport) {
+    <div class="report-date">
+      <span>Salary data as of</span>
+      <strong>{{ currentReport.asOfDate | date: 'longDate' }}</strong>
+    </div>
+  }
+</header>
+
+<form class="filter-panel" [formGroup]="query" (ngSubmit)="loadReport()" aria-label="Filter salary insights">
+  <mat-form-field appearance="outline">
+    <mat-label>Effective on</mat-label>
+    <input matInput type="date" formControlName="asOfDate" required />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Country</mat-label>
+    <mat-select formControlName="country">
+      <mat-option value="">All countries</mat-option>
+      @for (country of countries; track country.code) {
+        <mat-option [value]="country.code">{{ country.name }} ({{ country.code }})</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Department</mat-label>
+    <mat-select formControlName="department">
+      <mat-option value="">All departments</mat-option>
+      @for (department of departments; track department) {
+        <mat-option [value]="department">{{ department }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+    {{ loading() ? 'Loading…' : 'Apply filters' }}
+  </button>
+</form>
+
+@if (errorMessage()) {
+  <section class="report-state error-state" role="alert">
+    <span class="state-icon" aria-hidden="true">!</span>
+    <h2>Insights unavailable</h2>
+    <p>{{ errorMessage() }}</p>
+    <button mat-stroked-button type="button" (click)="loadReport()" [disabled]="loading()">Try again</button>
+  </section>
+} @else if (loading() && !report()) {
+  <section class="report-state" role="status" aria-live="polite">
+    <span class="state-icon" aria-hidden="true">…</span>
+    <h2>Loading salary insights</h2>
+    <p>Retrieving aggregated salary data.</p>
+  </section>
+} @else if (report(); as currentReport) {
+  @if (currentReport.groups.length === 0) {
+    <section class="report-state">
+      <span class="state-icon" aria-hidden="true">⌕</span>
+      <h2>No salary data for these filters</h2>
+      <p>Try a different date, country, or department.</p>
+    </section>
+  } @else {
+    <section class="overview" aria-label="Salary totals by currency">
+      <div class="overview-intro">
+        <div>
+          <p class="section-kicker">PAYROLL OVERVIEW</p>
+          <h2>{{ totalEmployeeCount() | number }} active employees</h2>
+        </div>
+        <p>Totals stay separate by currency; no exchange-rate conversion is applied.</p>
+      </div>
+      <div class="currency-cards">
+        @for (summary of currencySummaries(); track summary.currencyCode) {
+          <article class="currency-card">
+            <div class="currency-heading">
+              <span>{{ summary.currencyCode }}</span>
+            </div>
+            <strong>{{ summary.totalAnnualBaseSalary | currency: summary.currencyCode: 'symbol-narrow': '1.0-0' }}</strong>
+            <p>{{ summary.employeeCount | number }} employees · {{ summary.groupCount }} groups</p>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="distribution-card" aria-labelledby="distribution-title">
+      <header class="distribution-heading">
+        <div>
+          <p class="section-kicker">COMPENSATION BREAKDOWN</p>
+          <h2 id="distribution-title">Pay by country and department</h2>
+        </div>
+        <span>{{ currentReport.groups.length }} groups</span>
+      </header>
+      <div class="table-scroll">
+        <table>
+          <caption class="visually-hidden">Annual salary distribution grouped by country, department, and currency</caption>
+          <thead>
+            <tr>
+              <th scope="col">Country</th>
+              <th scope="col">Department</th>
+              <th scope="col">Currency</th>
+              <th scope="col">Employees</th>
+              <th scope="col">Average</th>
+              <th scope="col">Median</th>
+              <th scope="col">Range</th>
+              <th scope="col">Total annual pay</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (group of currentReport.groups; track group.countryCode + group.department + group.currencyCode) {
+              <tr>
+                <td>{{ group.countryCode }}</td>
+                <td class="department-cell">{{ group.department }}</td>
+                <td>{{ group.currencyCode }}</td>
+                <td>{{ group.employeeCount | number }}</td>
+                <td>{{ group.averageAnnualBaseSalary | currency: group.currencyCode: 'symbol-narrow': '1.0-0' }}</td>
+                <td>{{ group.medianAnnualBaseSalary | currency: group.currencyCode: 'symbol-narrow': '1.0-0' }}</td>
+                <td>{{ group.minimumAnnualBaseSalary | currency: group.currencyCode: 'symbol-narrow': '1.0-0' }} – {{ group.maximumAnnualBaseSalary | currency: group.currencyCode: 'symbol-narrow': '1.0-0' }}</td>
+                <td class="total-cell">{{ group.totalAnnualBaseSalary | currency: group.currencyCode: 'symbol-narrow': '1.0-0' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="data-note">Annual base salary only. Active employees are grouped using the latest salary effective on or before the selected date.</p>
+    </section>
+  }
+}

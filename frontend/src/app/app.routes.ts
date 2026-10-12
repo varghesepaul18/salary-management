@@ -22,11 +22,7 @@ export const routes: Routes = [
       },
       {
         path: 'analytics',
-        loadComponent: () => import('./shared/feature-placeholder/feature-placeholder').then((module) => module.FeaturePlaceholder),
-        data: {
-          title: 'Salary insights',
-          description: 'Explore how the organization pays people by country, department, and currency.',
-        },
+        loadComponent: () => import('./features/salary-insights/salary-insights-page/salary-insights-page').then((module) => module.SalaryInsightsPage),
       },
     ],
   },
