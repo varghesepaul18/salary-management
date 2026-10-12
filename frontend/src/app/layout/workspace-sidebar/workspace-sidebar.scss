@@ -1,0 +1,44 @@
+:host { --sidebar-width: 260px; position: fixed; inset: 0 auto 0 0; z-index: 2; display: block; width: var(--sidebar-width); transition: width 180ms ease; }
+:host(.sidebar-collapsed) { --sidebar-width: 76px; }
+.sidebar { display: flex; height: 100%; flex-direction: column; padding: 24px 15px 18px; overflow-x: hidden; border-right: 1px solid var(--app-border); background: #fff; }
+.sidebar-header { display: flex; align-items: center; justify-content: space-between; min-width: 0; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 0 5px; color: var(--app-ink); font-size: 15px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.brand-mark { display: grid; width: 34px; height: 34px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: var(--app-primary); color: #fff; font-family: Georgia, serif; font-size: 22px; font-weight: 400; }
+.brand-light { color: var(--app-muted); font-weight: 400; }
+.sidebar-toggle, .mobile-menu-toggle { display: inline-grid; width: 34px; min-width: 34px; height: 34px; place-items: center; padding: 0; color: var(--app-muted); font-size: 21px; }
+.mobile-menu-toggle { display: none; }
+.nav-label { margin: 42px 10px 12px; color: #8692a3; font-size: 10px; font-weight: 700; letter-spacing: .14em; white-space: nowrap; }
+nav { display: grid; gap: 5px; }
+nav a { display: flex; align-items: center; gap: 12px; min-height: 43px; padding: 0 12px; border-radius: 7px; color: #526176; font-size: 13px; font-weight: 500; text-decoration: none; transition: background-color 130ms ease, color 130ms ease; }
+nav a:hover { background: #f4f7f8; color: var(--app-primary-dark); }
+nav a.active { background: var(--app-accent); color: var(--app-primary-dark); font-weight: 650; }
+.nav-glyph { display: grid; width: 20px; height: 20px; flex: 0 0 auto; place-items: center; font-size: 19px; }
+.sidebar-bottom { display: flex; align-items: center; gap: 10px; margin-top: auto; padding: 16px 5px 0; border-top: 1px solid #edf0f4; }
+.user-label { display: grid; min-width: 0; gap: 3px; font-size: 11px; }
+.user-label strong { color: var(--app-ink); font-size: 12px; font-weight: 600; }
+.sign-out { margin-left: auto; min-width: 36px; padding: 0; color: var(--app-muted); font-size: 18px; }
+:host(.sidebar-collapsed) .brand > span:last-child, :host(.sidebar-collapsed) .nav-label, :host(.sidebar-collapsed) .nav-text, :host(.sidebar-collapsed) .user-label { display: none; }
+:host(.sidebar-collapsed) .sidebar { align-items: center; padding-inline: 10px; }
+:host(.sidebar-collapsed) .sidebar-header { width: 100%; flex-direction: column; gap: 18px; }
+:host(.sidebar-collapsed) .brand { padding: 0; }
+:host(.sidebar-collapsed) nav { width: 100%; margin-top: 28px; }
+:host(.sidebar-collapsed) nav a { justify-content: center; padding: 0; }
+:host(.sidebar-collapsed) .sidebar-bottom { width: 100%; flex-wrap: wrap; justify-content: center; gap: 5px; padding-inline: 0; }
+:host(.sidebar-collapsed) .sign-out { margin: 0; }
+@media (max-width: 760px) {
+  :host, :host(.sidebar-collapsed) { position: sticky; inset: auto; width: 100%; height: auto; }
+  .sidebar, :host(.sidebar-collapsed) .sidebar { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; width: 100%; height: auto; padding: 10px 14px; overflow: visible; border-right: 0; border-bottom: 1px solid var(--app-border); }
+  :host(.sidebar-collapsed) .sidebar-header { width: auto; flex-direction: row; gap: 0; }
+  .brand, :host(.sidebar-collapsed) .brand { min-width: 0; padding: 0; }
+  .brand > span:last-child, :host(.sidebar-collapsed) .brand > span:last-child { display: inline; }
+  .sidebar-toggle { display: none; }
+  .mobile-menu-toggle { display: inline-grid; margin-left: auto; }
+  .nav-label, :host(.sidebar-collapsed) .nav-label { display: none; }
+  nav, :host(.sidebar-collapsed) nav { display: none; margin: 0; }
+  .mobile-nav-open nav, :host(.sidebar-collapsed) .mobile-nav-open nav { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr; gap: 4px; padding: 8px 0 2px; }
+  nav a, :host(.sidebar-collapsed) nav a { justify-content: flex-start; gap: 10px; min-height: 44px; padding: 0 12px; font-size: 13px; }
+  .nav-text, :host(.sidebar-collapsed) .nav-text { display: inline; }
+  .sidebar-bottom, :host(.sidebar-collapsed) .sidebar-bottom { justify-content: center; width: auto; margin: 0; padding: 0; border: 0; }
+  .user-label { display: none; }
+  .sign-out, :host(.sidebar-collapsed) .sign-out { width: 38px; height: 38px; margin: 0; }
+}
