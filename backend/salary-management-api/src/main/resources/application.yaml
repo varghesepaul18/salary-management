@@ -19,6 +19,8 @@ management:
         include: "health,loggers"
 
 app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200}
   security:
     hr-manager:
       username: ${HR_MANAGER_USERNAME:hr-manager}
