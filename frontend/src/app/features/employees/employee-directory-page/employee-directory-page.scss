@@ -16,10 +16,10 @@ table { width: 100%; border-collapse: collapse; text-align: left; white-space: n
 thead { background: #f8fafb; }
 th { height: 45px; padding: 0 20px; color: #6c7b8d; font-size: 10px; font-weight: 700; letter-spacing: .055em; text-transform: uppercase; }
 td { height: 65px; padding: 0 20px; border-top: 1px solid #edf0f4; color: #46566d; font-size: 12px; }
-tbody tr:hover { background: #fbfcfd; }
 .person-cell { display: flex; align-items: center; gap: 11px; }
 .person-avatar { display: grid; width: 32px; height: 32px; flex: 0 0 auto; place-items: center; border-radius: 50%; background: #e6f1ef; color: #276c62; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-.person-name { color: #24364d; font-weight: 600; }
+.person-name { color: #24364d; font-weight: 600; text-decoration: none; }
+.person-name:hover { color: var(--app-primary-dark); text-decoration: underline; }
 .status-pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 9px; border-radius: 20px; font-size: 10px; font-weight: 600; }
 .status-pill span { width: 6px; height: 6px; border-radius: 50%; }
 .status-active { background: #e9f6ef; color: #216a4c; }
@@ -34,12 +34,10 @@ tbody tr:hover { background: #fbfcfd; }
 .pagination button { min-width: 68px; font-size: 11px; }
 .result-state { display: grid; justify-items: center; margin-top: 20px; padding: 66px 20px; border: 1px solid var(--app-border); border-radius: 11px; background: #fff; text-align: center; }
 .state-mark { display: grid; width: 42px; height: 42px; place-items: center; margin-bottom: 14px; border-radius: 50%; background: var(--app-accent); color: var(--app-primary); font-size: 23px; }
-.loading-mark { animation: turn 1.2s linear infinite; }
 .result-state h2 { margin: 0; color: #2a3d53; font-size: 16px; font-weight: 600; }
 .result-state p { margin: 8px 0 18px; color: var(--app-muted); font-size: 12px; }
 .error-state .state-mark { background: #fff0ee; color: #ab352b; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
-@keyframes turn { to { transform: rotate(360deg); } }
 
 @media (max-width: 1080px) {
   .filter-panel { grid-template-columns: repeat(2, minmax(180px, 1fr)); }

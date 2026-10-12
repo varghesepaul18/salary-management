@@ -17,6 +17,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/employees/employee-directory-page/employee-directory-page').then((module) => module.EmployeeDirectoryPage),
       },
       {
+        path: 'employees/:employeeId/salary-history',
+        loadComponent: () => import('./features/salary-history/employee-salary-history-page/employee-salary-history-page').then((module) => module.EmployeeSalaryHistoryPage),
+      },
+      {
         path: 'analytics',
         loadComponent: () => import('./shared/feature-placeholder/feature-placeholder').then((module) => module.FeaturePlaceholder),
         data: {

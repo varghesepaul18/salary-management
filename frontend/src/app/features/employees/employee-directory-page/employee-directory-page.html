@@ -93,7 +93,7 @@
                 <td>
                   <div class="person-cell">
                     <span class="person-avatar" aria-hidden="true">{{ employee.firstName.charAt(0) }}{{ employee.lastName.charAt(0) }}</span>
-                    <span class="person-name">{{ employee.firstName }} {{ employee.lastName }}</span>
+                    <a class="person-name" [routerLink]="['/app/employees', employee.id, 'salary-history']" [state]="{ employee }" [attr.aria-label]="'Open salary history for ' + employee.firstName + ' ' + employee.lastName">{{ employee.firstName }} {{ employee.lastName }}</a>
                   </div>
                 </td>
                 <td class="employee-number">{{ employee.employeeNumber }}</td>

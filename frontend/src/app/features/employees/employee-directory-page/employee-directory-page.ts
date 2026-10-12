@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { RouterLink } from '@angular/router';
 import { catchError, map, of, Subject, switchMap } from 'rxjs';
 import { EmployeeDirectoryService } from '../data-access/employee-directory.service';
 import { EmployeePage, EmployeeSearch, EmployeeSummary, EmploymentStatus } from '../data-access/employee-directory.models';
@@ -26,7 +27,7 @@ type EmployeeLoadResult =
 
 @Component({
   selector: 'app-employee-directory-page',
-  imports: [DecimalPipe, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule],
+  imports: [DecimalPipe, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule, RouterLink],
   templateUrl: './employee-directory-page.html',
   styleUrl: './employee-directory-page.scss',
 })
