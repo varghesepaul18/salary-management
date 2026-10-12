@@ -61,12 +61,14 @@ The backend applies Flyway migrations on startup. Configure local database crede
 PowerShell example (set these in the terminal where the backend will run):
 
 ```powershell
-$env:SPRING_DATASOURCE_URL = 'jdbc:postgresql://localhost:5432/salary_management'
-$env:SPRING_DATASOURCE_USERNAME = 'salary_app'
-$env:SPRING_DATASOURCE_PASSWORD = '<your local database password>'
+$env:SALARY_DB_URL = 'jdbc:postgresql://localhost:5432/salary_management'
+$env:SALARY_DB_USERNAME = 'salary_app'
+$env:SALARY_DB_PASSWORD = '<your local database password>'
 $env:HR_MANAGER_USERNAME = 'hr-manager'
 $env:HR_MANAGER_PASSWORD = '<your local HR manager password>'
-$env:APP_SECURITY_JWT_SECRET = '<a random secret with at least 32 bytes>'
+$env:JWT_SECRET = '<a random secret with at least 32 bytes>'
+# Optional when the Angular app is hosted somewhere other than localhost:4200
+$env:APP_CORS_ALLOWED_ORIGINS = 'http://localhost:4200'
 ```
 
 ### 2. Start the backend and create the schema
