@@ -1,3 +1,11 @@
 spring:
   application:
     name: salary-management-api
+  datasource:
+    url: ${SALARY_DB_URL:jdbc:postgresql://localhost:5432/salary_management}
+    username: ${SALARY_DB_USERNAME:salary_app}
+    password: ${SALARY_DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
