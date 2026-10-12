@@ -1,0 +1,34 @@
+<div class="workspace">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/app/employees" aria-label="ACME People and Pay">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>ACME <span class="brand-light">People &amp; Pay</span></span>
+    </a>
+
+    <p class="nav-label">WORKSPACE</p>
+    <nav aria-label="Main navigation">
+      <a routerLink="/app/analytics" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="nav-glyph" aria-hidden="true">↗</span> Salary insights
+      </a>
+      <a routerLink="/app/employees" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span class="nav-glyph people-glyph" aria-hidden="true">◎</span> Employees
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-badge" aria-hidden="true">HR</div>
+      <div class="user-label"><strong>HR Manager</strong><span>ACME Organization</span></div>
+      <button mat-button type="button" class="sign-out" (click)="signOut()" aria-label="Sign out">↪</button>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="topbar">
+      <div><p class="topbar-kicker">PEOPLE OPERATIONS</p><span>Salary management</span></div>
+      <span class="secure-chip"><span aria-hidden="true"></span> Secure workspace</span>
+    </header>
+    <section class="page-content" aria-live="polite">
+      <router-outlet />
+    </section>
+  </main>
+</div>
