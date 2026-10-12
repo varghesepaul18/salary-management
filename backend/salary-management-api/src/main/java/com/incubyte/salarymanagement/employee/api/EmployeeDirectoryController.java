@@ -8,18 +8,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/employees")
-@Slf4j
 @Tag(name = "Employees", description = "Search and browse the employee directory")
 @SecurityRequirement(name = "bearerAuth")
 public class EmployeeDirectoryController {
@@ -50,21 +46,15 @@ public class EmployeeDirectoryController {
             @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of employees per page (1-100)", example = "20")
             @RequestParam(defaultValue = "20") int size) {
+        Page<EmployeeSummaryResponse> results = employeeDirectoryService
+                .search(search, country, department, status, page, size)
+                .map(EmployeeSummaryResponse::from);
 
-        try {
-            Page<EmployeeSummaryResponse> results = employeeDirectoryService
-                    .search(search, country, department, status, page, size)
-                    .map(EmployeeSummaryResponse::from);
-
-            return new EmployeePageResponse(
-                    results.getContent(),
-                    results.getNumber(),
-                    results.getSize(),
-                    results.getTotalElements(),
-                    results.getTotalPages());
-        } catch (IllegalArgumentException exception) {
-            log.warn("Rejected employee directory request: {}", exception.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
-        }
+        return new EmployeePageResponse(
+                results.getContent(),
+                results.getNumber(),
+                results.getSize(),
+                results.getTotalElements(),
+                results.getTotalPages());
     }
 }

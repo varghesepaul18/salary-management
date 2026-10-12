@@ -9,12 +9,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
@@ -46,17 +44,10 @@ public class SalaryAnalyticsController {
             @RequestParam(required = false) String country,
             @Parameter(description = "Optional department filter, case-insensitive")
             @RequestParam(required = false) String department) {
-
-        try {
-            log.debug("Received pay distribution request: asOfDate={}, country={}, department={}",
-                    asOfDate, country, department);
-            return PayDistributionResponse.from(
-                    salaryAnalyticsService.getPayDistribution(
-                            asOfDate, country, department));
-        } catch (IllegalArgumentException exception) {
-            log.warn("Rejected pay distribution request: {}", exception.getMessage());
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, exception.getMessage());
-        }
+        log.debug("Received pay distribution request: asOfDate={}, country={}, department={}",
+                asOfDate, country, department);
+        return PayDistributionResponse.from(
+                salaryAnalyticsService.getPayDistribution(
+                        asOfDate, country, department));
     }
 }
